@@ -12,8 +12,11 @@ class Settings(BaseSettings):
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7  # 7 days
     
-    # Database
-    DATABASE_URL: str = os.getenv("DATABASE_URL", "sqlite:///./pdt_twin.db")
+    # Database URL: Auto-switch to writable /tmp SQLite location on Vercel Serverless
+    DATABASE_URL: str = os.getenv(
+        "DATABASE_URL",
+        "sqlite:////tmp/pdt_twin.db" if os.getenv("VERCEL") else "sqlite:///./pdt_twin.db"
+    )
     
     # AI/ML API Key (Optional)
     GEMINI_API_KEY: Optional[str] = os.getenv("GEMINI_API_KEY", None)
@@ -23,4 +26,3 @@ class Settings(BaseSettings):
         env_file = ".env"
 
 settings = Settings()
-
